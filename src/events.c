@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include "events.h"
 #include "init.h"
+#include "constants.h"
 
 void handle_key_press(SDL_Event event)
 {
@@ -11,13 +12,13 @@ void handle_key_press(SDL_Event event)
 			{
 				case SDLK_UP:
 					// Move forward in player Direct
-					posX += dirX * moveSpeed;
-					posY += dirY * moveSpeed;
+					if (worldMap[(int)(posX + dirX * moveSpeed)][(int)posY] == 0) posX += dirX * moveSpeed;
+					if (worldMap[(int)posX][(int)(posY + dirY * moveSpeed)] == 0) posY += dirY * moveSpeed;
 					break;
 				case SDLK_DOWN:
 					// Move backward
-					posX -= dirX * moveSpeed;
-					posY -= dirY * moveSpeed;
+					if (worldMap[(int)(posX - dirX * moveSpeed)][(int)posY] == 0) posX -= dirX * moveSpeed;
+					if (worldMap[(int)posX][(int)(posY - dirY * moveSpeed)] == 0) posY -= dirY * moveSpeed;
 					break;
 				case SDLK_LEFT:
 					// Rotate left (counter-clockwise)
@@ -64,10 +65,15 @@ int poll_events()
 			case SDL_KEYDOWN:
 				handle_key_press(event);
 				break;
+			case SDL_WINDOWEVENT:
+				// Handle window events (resize, focus, etc.)
+				if (event.window.event == SDL_WINDOWEVENT_CLOSE)
+					return 1; // Handle window close event
+				break;
 			default:
 				break;
 
 		}
 	}
-	return (0);
+	return (0);   // Continue running the game
 }

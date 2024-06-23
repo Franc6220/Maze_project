@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include "init.h"
+#include "textures.h"
 #include "constants.h"
 
 int init_instance(SDL_Instance *instance)
@@ -21,7 +22,7 @@ int init_instance(SDL_Instance *instance)
 	}
 
 	// Create SDL window
-	instance->window = SDL_CreateWindow("SDL2 \\0/", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1260, 720, 0);
+	instance->window = SDL_CreateWindow("SDL2 \\0/", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_SHOWN);
 	if (instance->window == NULL)
 	{
 		fprintf(stderr, "SDL_CreateWindow: %s\n", SDL_GetError());
@@ -41,3 +42,25 @@ int init_instance(SDL_Instance *instance)
 
 	return (0);
 }
+
+
+// Initialize the game
+int initialize_game(SDL_Instance* instance)
+{
+	if (init_instance(instance) != 0)
+		return 0;
+
+	if (!load_textures(instance->renderer))
+	{
+		SDL_DestroyRenderer(instance->renderer);
+		SDL_DestroyWindow(instance->window);
+		SDL_Quit();
+		return 0;
+	}
+
+	// Additional game initialization logic goes here
+	
+
+	return 1;
+}
+

@@ -1,6 +1,9 @@
 #ifndef INIT_H
 #define INIT_H
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+
 typedef struct SDL_Instance
 {
 	SDL_Window *window;
@@ -8,6 +11,8 @@ typedef struct SDL_Instance
 } SDL_Instance;
 
 int init_instance(SDL_Instance *instance);
+int load_textures(SDL_Renderer *renderer);
+int initialize_game(SDL_Instance* instance);
 
 extern double posX, posY; // Example declarations
 extern double dirX, dirY;
