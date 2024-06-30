@@ -12,13 +12,25 @@ void handle_key_press(SDL_Event event)
 			{
 				case SDLK_UP:
 					// Move forward in player Direct
-					if (worldMap[(int)(posX + dirX * moveSpeed)][(int)posY] == 0) posX += dirX * moveSpeed;
-					if (worldMap[(int)posX][(int)(posY + dirY * moveSpeed)] == 0) posY += dirY * moveSpeed;
+					if (worldMap[(int)(posX + dirX * moveSpeed)][(int)posY] == 0)
+					{
+						posX += dirX * moveSpeed;
+					}
+					if (worldMap[(int)posX][(int)(posY + dirY * moveSpeed)] == 0)
+					{
+						posY += dirY * moveSpeed;
+					}
 					break;
 				case SDLK_DOWN:
 					// Move backward
-					if (worldMap[(int)(posX - dirX * moveSpeed)][(int)posY] == 0) posX -= dirX * moveSpeed;
-					if (worldMap[(int)posX][(int)(posY - dirY * moveSpeed)] == 0) posY -= dirY * moveSpeed;
+					if (worldMap[(int)(posX - dirX * moveSpeed)][(int)posY] == 0)
+					{
+						posX -= dirX * moveSpeed;
+					}
+					if (worldMap[(int)posX][(int)(posY - dirY * moveSpeed)] == 0)
+					{
+						posY -= dirY * moveSpeed;
+					}
 					break;
 				case SDLK_LEFT:
 					// Rotate left (counter-clockwise)

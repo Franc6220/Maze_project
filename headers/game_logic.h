@@ -11,6 +11,9 @@ void handle_collisions();
 void triggerSpecialEvent();
 void endSpecialEvent();
 
+extern int playerMapX;
+extern int playerMapY;
+extern SDL_Rect playerRect;
 
 #endif
 

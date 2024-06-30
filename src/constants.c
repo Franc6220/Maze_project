@@ -1,5 +1,9 @@
 #include "constants.h"
 
+
+int mapDisplayHeight = screenHeight / 4;
+int lifeCount = 5;
+
 int worldMap[mapWidth][mapHeight] =
 {
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},

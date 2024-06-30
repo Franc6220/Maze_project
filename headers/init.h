@@ -13,6 +13,7 @@ typedef struct SDL_Instance
 int init_instance(SDL_Instance *instance);
 int load_textures(SDL_Renderer *renderer);
 int initialize_game(SDL_Instance* instance);
+void draw_life(SDL_Instance instance, int offsetX, int offsetY);
 
 extern double posX, posY; // Example declarations
 extern double dirX, dirY;

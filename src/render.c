@@ -7,12 +7,26 @@ extern SDL_Texture* wallTextures[4];
 extern double posX, posY, dirX, dirY, planeX, planeY;
 extern int specialEventActive;
 
+
 void render_ui(SDL_Instance instance)
 {
-	SDL_Rect healthBar = {10, 10, 100, 20};
+	// Draw the map
+	draw_map(instance);
+
+	// Draw the life count
+	// Adjust these values based on your map and life count rendering logic
+	int mapDisplayWidth = screenWidth / 4;
+	int offsetX = 0;
+	
+	// Draw the health bar
 	SDL_SetRenderDrawColor(instance.renderer, 255, 0, 0, 255);
+	
+	// Draw the health bar
+	SDL_Rect healthBar = {offsetX + mapDisplayWidth + 10, 10, 100, 20};
 	SDL_RenderFillRect(instance.renderer, &healthBar);
+	
 }
+
 
 void render_hud(SDL_Instance instance)
 {
@@ -21,33 +35,22 @@ void render_hud(SDL_Instance instance)
 	int centerY = screenHeight / 2;
 	SDL_RenderDrawLine(instance.renderer, centerX - 10, centerY, centerX + 10, centerY);
 	SDL_RenderDrawLine(instance.renderer, centerX, centerY - 10, centerX, centerY + 10);
-}
-
-void render_special_effects(SDL_Instance instance)
-{
-	if (specialEventActive)
-	{
-		// Render sunset background
-		SDL_SetRenderDrawColor(instance.renderer, 255, 102, 0, 255); // Orange
-		SDL_Rect sunsetRect = {0, 0, screenWidth, screenHeight};
-		SDL_RenderFillRect(instance.renderer, &sunsetRect);
-	}
-}
-
-void triggerSpecialEvent()
-{
-	specialEventActive = 1; // Set to 1 when special event starts
-}
-
-void endSpecialEvent()
-{
-	specialEventActive = 0; // Set to 0 when special event ends
 	
 }
 
 
 void draw_scene(SDL_Instance instance)
 {
+	// Clear the screen with the floor color
+	SDL_SetRenderDrawColor(instance.renderer, 169, 169, 169, 255); // Dark gray for floor
+	SDL_Rect floorRect = {0, screenHeight / 2, screenWidth, screenHeight / 2};
+	SDL_RenderFillRect(instance.renderer, &floorRect);
+
+	// Draw the ceiling
+	SDL_SetRenderDrawColor(instance.renderer, 130, 206,250, 255); // Sky blue for ceiling
+	SDL_Rect ceilingRect = { 0, 0, screenWidth, screenHeight / 2 };
+	SDL_RenderFillRect(instance.renderer, &ceilingRect);
+
 	for (int x = 0; x < screenWidth; x++)
 	{
 		double cameraX = 2 * x / (double)screenWidth - 1;
@@ -165,6 +168,8 @@ void draw_scene(SDL_Instance instance)
 	}
 }
 
+
+
 void draw_map(SDL_Instance instance)
 {
 	int mapDisplayWidth = screenWidth / 4;  // Example: display the map in a quarter of the screen width
@@ -172,8 +177,11 @@ void draw_map(SDL_Instance instance)
 	
 	
        	// Position offset for the map (e.g., top-left corner)
-	int offsetX = screenWidth - mapDisplayWidth; // Adjust as needed
+	int offsetX = 0;
 	int offsetY = 0;
+
+	// Print map display dimensions
+	printf("Map display width: %d, height: %d\n", mapDisplayWidth, mapDisplayHeight);
 
 
 	SDL_SetRenderDrawColor(instance.renderer, 255, 255, 255, 255);          // Set color for map
@@ -183,34 +191,63 @@ void draw_map(SDL_Instance instance)
 		{
 			if (worldMap[i][j] != 0)
 			{
-				SDL_Rect mapRect = {offsetX + i * (mapDisplayWidth / mapWidth), offsetY + j * (mapDisplayHeight / mapHeight), mapDisplayWidth / mapWidth, mapDisplayHeight / mapHeight};      // Scale map coordinates for display
+				SDL_Rect mapRect = 
+				{
+					offsetX + i * (mapDisplayWidth / mapWidth), 
+					offsetY + j * (mapDisplayHeight / mapHeight), 
+					mapDisplayWidth / mapWidth, 
+					mapDisplayHeight / mapHeight
+				};      // Scale map coordinates for display
+
+				// Print each map block position and size
+				printf("Map block at (%d, %d): x=%d, y=%d, w=%d, h=%d\n", i, j, mapRect.x, mapRect.y, mapRect.w, mapRect.h);
+
 				SDL_RenderFillRect(instance.renderer, &mapRect); // Render map block
 			}
 		}
 	}
+
+	// Draw the player position
+	SDL_SetRenderDrawColor(instance.renderer, 255, 0, 0, 255);   // Red color for player
+	
+	
+	// Correctly scale and position the player on the map
+	int playerMapX = offsetX + (int)((posX / (float)mapWidth) * mapDisplayWidth);
+	int playerMapY = offsetY + (int)((posY / (float)mapHeight) * mapDisplayHeight);
+	
+	// Debugging information
+	printf("posX: %f, posY: %f\n", posX, posY);
+	printf("playerMapX: %d, playerMapY: %d\n", playerMapX, playerMapY);
+
+	// Clamp player position within the map boundaries
+	playerMapX = offsetX + (int)((posX / (float)mapWidth) * mapDisplayWidth);
+	playerMapY = offsetY + (int)((posY / (float)mapHeight) * mapDisplayHeight);
+
+	// More Debugging information after clamping
+	printf("playerMapX after clamping: %d, playerMapY after clamping: %d\n", playerMapX, playerMapY);
+	
+	SDL_Rect playerRect =
+	{
+		playerMapX - (mapDisplayWidth / mapWidth),
+		playerMapY - (mapDisplayHeight / mapHeight),
+		mapDisplayWidth / mapWidth,
+		mapDisplayHeight / mapHeight
+	};   // Scale player position
+
+	// Print player rectangle position and size
+	printf("Player rect: x=%d, y=%d, w=%d, h=%d\n", playerRect.x, playerRect.y, playerRect.w, playerRect.h);
+	
+	SDL_RenderFillRect(instance.renderer, &playerRect);  // Render player position
+	
 }
 
 void render_game(SDL_Instance instance)
 {
-	// Clear the renderer with a neutral color
-	SDL_SetRenderDrawColor(instance.renderer, 0, 0, 0, 255);
-	SDL_RenderClear(instance.renderer);
-
-	// Set color for the ceiling
-	SDL_SetRenderDrawColor(instance.renderer, 0, 0, 0, 255);
-	SDL_Rect ceilingRect = {0, 0, screenWidth, screenHeight / 2};
-	SDL_RenderFillRect(instance.renderer, &ceilingRect);
-
-	// Set color for the floor
-	SDL_SetRenderDrawColor(instance.renderer, 255, 140, 0, 255); // Darker orange for the floor
-	SDL_Rect floorRect = {0, screenHeight / 2, screenWidth, screenHeight / 2};
-	SDL_RenderFillRect(instance.renderer, &floorRect);
 
 	draw_scene(instance);
 	draw_map(instance);
 	render_ui(instance);
 	render_hud(instance);
-	render_special_effects(instance);
-
+	
 	SDL_RenderPresent(instance.renderer);
 }

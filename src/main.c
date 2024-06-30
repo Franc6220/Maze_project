@@ -7,6 +7,7 @@
 #include "../headers/game_logic.h"
 #include "../headers/render.h"
 #include "../headers/events.h"
+ #include "../headers/player.h"
 
 
 int main (void)
@@ -19,18 +20,11 @@ int main (void)
 
 	while (1)
 	{
-		// Set sunset color
-		SDL_SetRenderDrawColor(instance.renderer, 255, 102, 0, 255); // Orange
-		
-		// Clear the renderer with the sunset color
-		SDL_RenderClear(instance.renderer);
-
-
 		// Poll events, update game logic, render scene, map, HUD, etc.
 		if (poll_events() == 1)
 			break;
 		
-		update_game(instance); // Update game state
+		update_game(instance); // Update game
 		render_game(instance); // Render the game scene
 
 		SDL_RenderPresent(instance.renderer); // Present rendered image
